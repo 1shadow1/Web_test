@@ -1,0 +1,139 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "shengli model touch.moc3",
+		"Textures": [
+			"shengli model touch.2048/texture_00.png"
+		],
+		"Pose": "shengli model touch.pose3.json",
+		"DisplayInfo": "shengli model touch.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "happy_1.11s",
+				"File": "expressions/happy_1.11s.exp3.json"
+			},
+			{
+				"Name": "like_1s",
+				"File": "expressions/like_1s.exp3.json"
+			}
+		],
+		"Motions": {
+			"Laugh": [
+				{
+					"File": "motions/happy_1.11s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Like": [
+				{
+					"File": "motions/like_1s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Amazing": [
+				{
+					"File": "motions/amazing_1s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Angry": [
+				{
+					"File": "motions/angry_1.15s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Crying": [
+				{
+					"File": "motions/crying_1.13s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Idle": [
+				{
+					"File": "motions/Daiji1.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Speak": [
+				{
+					"File": "motions/Speak.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				},
+				{
+					"File": "motions/2Speak_4s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				},
+				{
+					"File": "motions/Speak3 _2.20s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Thinking": [
+				{
+					"File": "motions/thinking_4s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				},
+				{
+					"File": "motions/thinking2_4s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Wait": [
+				{
+					"File": "motions/1wait_3.20s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				},
+				{
+					"File": "motions/2wait_4s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				},
+				{
+					"File": "motions/3wait_3s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			],
+			"Shut": [
+				{
+					"File": "motions/shut up_15s.motion3.json",
+					"FadeInTime": 0,
+					"FadeOutTime": 0
+				}
+			]
+		}
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		}
+	],
+	"HitAreas": [
+		{
+			"Id": "HitArea",
+			"Name": ""
+		}
+	]
+}

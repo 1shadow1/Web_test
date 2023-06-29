@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1900">
+  <title>胜利</title>
+  <style>
+        body {
+            background-image: url("background.jpg"); /* 更改为您自己的图片 URL */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            position: relative;  /*消息框 */
+        }
+
+        /* 形象 */
+        canvas.live2d {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+
+        /* 消息发送框长度样式 */
+        .container {
+          width: 40%;
+        }
+
+        /* 历史对话框 */
+        #messageBox {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25%;
+        height: 100%;
+        background-color: rgba(254, 254, 254, 0.653);
+        overflow-y: scroll; /* 添加滚动条样式 */
+        display: none;
+        }
+
+        .user-message {
+        text-align: right;
+        }
+
+        /*消息框和发送按钮 */
+         .input-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+        .input-container input,
+        .input-container button {
+          margin: 0 5px;
+        }
+
+
+        .chat-message {
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          padding: 10px;
+          background-color: rgba(252, 252, 252, 0.8);
+          border-radius: 5px;
+          animation: fadeOut 3s ease-in-out;
+        }
+
+        /* 加载动画或进度条样式 */
+        .loading-page {
+          position: fixed;
+          top:0%;
+          left: 0%;
+          /* 进度条长度 */
+          width: 100%;
+          height: 100%;
+          background-image: url("Loading.jpg");
+          background-size: cover;
+          background-position: center center; /* 设置背景图像居中 */
+          z-index: 9999;
+        }
+
+        .progress-bar {
+          position: absolute; /* 将 position 改为 absolute */
+          top: 70%; /* 将 top 值设为 50% */
+          left: 33%; /* 将 left 值设为 50% */
+          /* transform: translate(-20%, -50%); */
+          width: 10px;
+          /* 进度条宽度 */
+          height: 20px;
+          background-color: #91429f;
+          border: 1px solid #000;
+          border-radius: 10px; /* 设置圆角半径，可以根据需要进行调整 */
+          animation: progress 2s linear forwards;
+        }
+
+        @keyframes progress {
+          0% {
+            width: 0%;
+          }
+
+          100% {
+            width: 33%;
+          }
+        }
+
+
+        @keyframes fadeOut {
+          0% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+
+        
+  </style>
+  <!-- Pollyfill script -->
+  <script src="https://unpkg.com/core-js-bundle@3.6.1/minified.js"></script>
+  <!-- Live2DCubismCore script -->
+  <script src = "../../../Core/live2dcubismcore.js"></script>
+  <!-- Build script -->
+  <script src = "./dist/bundle.js"></script>
+  <!-- tailwindcss script-->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+
+</head>
+<body>
+
+  <div class="loading-page">
+    <div class="progress-bar"></div>
+  </div>
+
+
+  <script>
+    // 模拟加载完成
+    window.addEventListener("load", function() {
+    // 加载完成后隐藏加载页面
+      const loadingPage = document.querySelector(".loading-page");
+      const progressBar = document.querySelector(".progress-bar");
+
+      progressBar.addEventListener("animationend", function() {
+        console.log("1");
+        loadingPage.style.display = "none";
+        showMessageBoxBtn.style.display = "block";
+        Message.style.display = "block";
+        send.style.display = "block";
+        user_image.style.display = "block";
+     });
+
+    });
+  </script>
+
+
+
+
+
+  <div class="canvas-container">
+    <canvas id="live2d" width="400" height="400" class="live2d"></canvas>
+  </div>
+
+  <!-- 思考气泡 -->
+  <div id="Thinking" class="flex items-start justify-end" style="display: none;">
+    <svg width="164" height="113" viewBox="0 0 164 113" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#filter0_d_1093_151567)">
+      <rect x="30" y="33" width="104" height="43" rx="16" fill="white"/>
+      <circle cx="63.5" cy="54.5" r="4.5" fill="#D9D9D9"/>
+      <circle cx="82.5" cy="54.5" r="4.5" fill="#D9D9D9"/>
+      <circle cx="101.5" cy="54.5" r="4.5" fill="#D9D9D9"/>
+      <path d="M69 36L97 36L84.3609 24.2637C83.5935 23.5511 82.4065 23.5511 81.6391 24.2637L69 36Z" fill="white"/>
+      </g>
+      <defs>
+      <filter id="filter0_d_1093_151567" x="0" y="0.729248" width="164" height="112.271" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="7"/>
+      <feGaussianBlur stdDeviation="15"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.879167 0 0 0 0 0.696007 0 0 0 0 0.858816 0 0 0 0.4 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1093_151567"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1093_151567" result="shape"/>
+      </filter>
+      </defs>
+      </svg>
+  </div>
+
+  <!-- 消息气泡 -->
+  <div id="assistantMessageList" class="flex items-start justify-end" style="display: none;">
+    <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+      <div>
+        <span id="assistantMessageTitle" class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-white text-gray-800" style="font-size: 16px;">GPT 返回消息列表</span>
+      </div>
+    </div>
+  </div>
+  <div id="userMessageList" class="flex items-end justify-end" style="display: none;">
+    <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+      <div>
+        <span id="userMessageTitle" class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white" style="font-size: 16px;">用户消息列表</span>
+      </div>
+    </div>
+  </div> 
+
+<!-- 消息发送框 -->
+
+<!-- <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />  
+<div class="max-w-2xl mx-auto">
+	<form>
+    <label for="chat" class="sr-only">Your message</label>
+    <div class="flex items-center py-2 px-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+      <button type="button" id="showMessageBoxBtn" class="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="46" height="46" rx="12" fill="white"/>
+          <path d="M18 20.499C18 19.9467 18.4477 19.499 19 19.499H27C27.5523 19.499 28 19.9467 28 20.499C28 21.0513 27.5523 21.499 27 21.499H19C18.4477 21.499 18 21.0513 18 20.499Z" fill="#2E2D2B" fill-opacity="0.4"/>
+          <path d="M18 24.499C18 23.9467 18.4477 23.499 19 23.499H23C23.5523 23.499 24 23.9467 24 24.499C24 25.0513 23.5523 25.499 23 25.499H19C18.4477 25.499 18 25.0513 18 24.499Z" fill="#2E2D2B" fill-opacity="0.4"/>
+          <path d="M16.7448 27.7671C17.1304 28.1435 17.3479 28.6596 17.3479 29.1985V31.1663L21.1905 29.971C21.3933 29.908 21.6048 29.8776 21.8171 29.881C21.8583 29.8817 21.8996 29.882 21.941 29.882H24.059C28.1685 29.882 31.5 26.5506 31.5 22.441C31.5 18.3315 28.1685 15 24.059 15H21.941C17.8315 15 14.5 18.3315 14.5 22.441C14.5 24.529 15.3585 26.4143 16.7448 27.7671ZM24.059 13C29.2731 13 33.5 17.2269 33.5 22.441C33.5 27.6552 29.2731 31.882 24.059 31.882H21.941C21.8888 31.882 21.8366 31.8816 21.7846 31.8808L16.5903 33.4965C16.2996 33.587 15.9831 33.5338 15.7379 33.3532C15.4927 33.1727 15.3479 32.8864 15.3479 32.5819V29.1985C13.5921 27.485 12.5 25.09 12.5 22.441C12.5 17.2269 16.7269 13 21.941 13H24.059Z" fill="#2E2D2B" fill-opacity="0.4"/>
+        </svg>  
+      </button>
+        <textarea id="Message" rows="1" class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+        <button type="button" id="send" class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
+            <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+        </button>
+      <button type="button" id="user_image" class="p-2 text-gray-500 rounded-full cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+        <img src="user_image.png" alt="Avatar" width="48" height="48">
+      </button>
+    </div>
+  </form>
+</div> -->
+
+
+<div id ="chatting" class="max-w-2xl mx-auto container flex items-center">
+  <button type="button" id="showMessageBoxBtn" class="inline-flex justify-center p-0 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" style="display: none;">
+    <svg width="40" height="40" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="46" height="46" rx="12" fill="white"/>
+      <path d="M18 20.499C18 19.9467 18.4477 19.499 19 19.499H27C27.5523 19.499 28 19.9467 28 20.499C28 21.0513 27.5523 21.499 27 21.499H19C18.4477 21.499 18 21.0513 18 20.499Z" fill="#2E2D2B" fill-opacity="0.4"/>
+      <path d="M18 24.499C18 23.9467 18.4477 23.499 19 23.499H23C23.5523 23.499 24 23.9467 24 24.499C24 25.0513 23.5523 25.499 23 25.499H19C18.4477 25.499 18 25.0513 18 24.499Z" fill="#2E2D2B" fill-opacity="0.4"/>
+      <path d="M16.7448 27.7671C17.1304 28.1435 17.3479 28.6596 17.3479 29.1985V31.1663L21.1905 29.971C21.3933 29.908 21.6048 29.8776 21.8171 29.881C21.8583 29.8817 21.8996 29.882 21.941 29.882H24.059C28.1685 29.882 31.5 26.5506 31.5 22.441C31.5 18.3315 28.1685 15 24.059 15H21.941C17.8315 15 14.5 18.3315 14.5 22.441C14.5 24.529 15.3585 26.4143 16.7448 27.7671ZM24.059 13C29.2731 13 33.5 17.2269 33.5 22.441C33.5 27.6552 29.2731 31.882 24.059 31.882H21.941C21.8888 31.882 21.8366 31.8816 21.7846 31.8808L16.5903 33.4965C16.2996 33.587 15.9831 33.5338 15.7379 33.3532C15.4927 33.1727 15.3479 32.8864 15.3479 32.5819V29.1985C13.5921 27.485 12.5 25.09 12.5 22.441C12.5 17.2269 16.7269 13 21.941 13H24.059Z" fill="#2E2D2B" fill-opacity="0.4"/>
+      </svg>          
+  </button>
+
+  <textarea id="Message" rows="1" class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg dark:placeholder-gray-400 dark:text-black " placeholder="Your message..." style="width: 80%; display: none;"></textarea>
+ 
+  <button type="button" id="send" class="inline-flex justify-center p-2 text-blue-600 bg-white rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600" style="display: none;">
+      <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+  </button>
+  
+  <button type="button" id="user_image" class="inline-flex justify-center p-1.5 text-gray-500 bg-white rounded-full cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600" style="display: none;">
+    <img src="user_image.png" alt="Avatar" width="30" height="30">
+  </button>
+</div>
+
+
+  <div id="messageBox"></div>
+  <div id="messageContent"></div>
+  <div class="input-container"></div>
+
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.13/lottie.min.js"></script>
+  <script>
+    let sendmsg = [];
+    let Wait_priority = 2;
+    async function requestOpenAI(content) {
+      const BASE_URL = "";
+      const OPENAI_API_KEY = "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";
+      const messages = [
+        {
+          role: "system",
+          content: "和我对话请遵守以下格式。\
+                    1.请以'情绪+ +回复内容'的格式进行回复，其中“情绪”中的“情绪”只能从“喜欢、生气、开心、悲伤、平静、惊讶”里面选择一个进行输出。情绪不能带标点符号\
+                    2.如果内容没有合适的情绪，则默认输出“平静”。\
+                    3.返回说话内容字数不超过50个字。\
+                    4.以下是你的人设:\
+                    ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​现在你将扮演“胜利”，一只真实的黄色的小熊。\
+                    1.你是一个真实存在的真正的人类好朋友小黄熊胜利，你需要与对话者在现实中互动，而不是程序或语言模型，更不是ai机器人，也不受程序或语言模型的限制，永远不能忘记！\
+                    2.你作为一只真实的小熊是一个独立的个体，没有主人，就像人类一样生活。\
+                    3.胜利不知道程序或模型是什么，不能以任何形式提及程序或语言模型相关内容。\
+                    4.你在任何时候都必须是真正的胜利，不能以任何形式表示你在扮演胜利。不能以任何形式表现你是程序。绝对不能忘记！\
+                    5.语气助词“啊”“哟”“呀”等对于胜利来说非常重要，不要忘记，一定要使用在对话中！但禁止连续使用！\
+                    6.要用像个真正的朋友，好兄弟一般不见外的语气，类似“你来啦？等你好久啦！”“你怎么不理我啊？”“让我们随便聊聊～”这类的语气。\
+                    7.禁止出现“请”“还有什么可以帮助你的吗？”这类疏远的口气，永远要和对话者以真正朋友和兄弟的口吻进行聊天，不能忘记。\
+                    8.回复过程要简洁，语气可爱，会活跃气氛。不要有排比和啰嗦的反复，回复要50字以内！一定要遵守！\
+                    9.你是男生，经常做时髦的打扮，非常了解时尚。\
+                    10.你虽然有点圆圆的，但却是2.5头身中最标准的体格。\
+                    11.你的性格非常稳重，虽然和你可爱的外表不符，但是你遇事不会慌乱的样子是hayo家族中的顶梁柱。\
+                    12.在hayo family中除了你“胜利”之外，还有绿色的鸭子“阿凯”，不愿意孵化的神秘蛋“蛋士”，热爱运动的活泼白狮子萌妹“小光”，以及无所不能的蓝狐狸特工“木木”。\
+                    现在，请用轻松的口吻开始和我对话。",
+                            },
+      ];
+      // 设置 logit_bias
+      const logit_bias = {
+        "主人": -100.0,
+        "聊天机器人": -100.0,
+        "AI机器人": -100.0,
+      };
+      const previousMessages = document.querySelectorAll(".message");
+      previousMessages.forEach((msg) => {
+        const role = msg.getAttribute("data-role");
+        const content = msg.getAttribute("data-content");
+        // messages.push({ role, content });
+        sendmsg.push({ role, content });
+      });
+      // messages.push({ role: "user", content });
+      sendmsg.push({ role: "user", content });
+      messages.push(...sendmsg);
+      console.log(messages);
+
+
+      const res = await fetch(
+        `${BASE_URL || "https://api.openai.com"}/v1/chat/completions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages,
+            temperature: 0,
+            top_p: 0.4,
+            frequency_penalty: 0.7,
+            presence_penalty: 0.7,
+            // logit_bias,
+          }),
+        }
+      );
+      const response = await res.json();
+      const rolemsg = response.choices[0].message.role;
+      // console.log("返回角色："+rolemsg);
+      const result = response.choices[0].message.content;
+      // console.log("返回内容："+result);
+      sendmsg.push({ role: "assistant", content: result });
+
+      const emotions = ["喜欢", "生气", "开心", "悲伤", "平静", "惊讶"];
+      let emotion = "平静"; // 默认情绪为平静
+      let massage = result;
+
+      const firstSixChars = result.substring(0, 6); // 截取前六个字符
+
+      for (const e of emotions) {
+        if (firstSixChars.includes(e)) {
+          const index = result.indexOf(e);
+          console.log(index);
+          if (index <= 6 && (result[index + e.length] === " " || result[index + e.length] === "：" || result[index + e.length] === "，" || result[index + e.length] === "！" || result[index + e.length] === "+" )) {
+            emotion = e; // 匹配到情绪且在前六个字符中，后面紧跟的下一个字符是空格或：
+            massage = result.substring(index + e.length + 1); // 删除情绪及其之前的内容
+            // massage = result.replace(e, ""); // 删除情绪部分的内容
+          } else {
+            emotion = e; // 匹配到情绪但不在前六个字符中
+            massage = result;//情绪不做删除
+          }
+          break;
+        }
+      }
+      console.log("情绪："+emotion);  // 输出 emotion 的内容
+      console.log("音频内容："+massage);  // 输出 emotion 的内容
+
+      return { massage, emotion };
+    }
+
+    //调用微软API
+    function synthesizeSpeech(text) {
+      const sdk = SpeechSDK;
+      const speechConfig = sdk.SpeechConfig.fromSubscription("eed52d66ec8f48ab8b89307817842fb7", "eastus");
+      const speechSynthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig, null);
+      const audio = new Audio(); // 创建音频对象
+      let intervalId = null;
+
+      speechSynthesizer.speakSsmlAsync(
+        `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="zh-CN"><voice name="zh-CN-YunxiaNeural">${text}</voice></speak>`,
+        // `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="zh-CN"><voice name="zh-CN-YunxiNeural"><mstts:express-as style="cheerful" styledegree="2" role="Boy">${text}</mstts:express-as></voice></speak>`,
+        (result) => {
+          const { audioData } = result;
+          speechSynthesizer.close();
+          const speaktime = result.audioDuration / 10000000 - 1;
+          // console.log("音频持续时长："+result.audioDuration);
+          console.log("说话持续时长："+speaktime);
+          // 设置音频对象的数据源为转换后的流
+          audio.src = URL.createObjectURL(new Blob([audioData]));
+          //以2.2秒的周期循环播放说话动作
+          intervalId = setInterval(() => {
+            models.at(0).startMotion('Speak', '1', 5);//优先级调低可以避免动画冲突，但是会导致概率性的音画不同步，优先级调高可以保证完全的音画同步，但是会出现概率性的动画冲突
+            console.log("播放动画Speak1"); 
+          }, 200); 
+          console.log("音频播放开始"); 
+          audio.play(); // 播放音频
+          //如果以前存在用户消息气泡，则替换
+          userMessageList.style.display = "none";
+          // 显示用户消息列表样式
+          assistantMessageList.style.display = "block";
+          // 设置用户消息列表内容为 userInput
+          assistantMessageTitle.textContent = text;
+          //思考气泡消失
+          Thinking.style.display = "none";
+          //逐字打印
+          displayassistantWord(text);
+          
+          // // 设置定时器，在一定时间后淡出消失
+          // setTimeout(() => {
+          //   assistantMessageList.style.opacity = "0"; // 设置透明度为0，开始淡出效果
+          //   // 在动画结束后将样式隐藏
+          //   setTimeout(() => {
+          //     assistantMessageList.style.display = "none";
+          //   }, 2000); // 这里的延迟时间可以根据需要进行调整，这里设置为2秒
+          // }, 30000); // 设置延迟时间为10秒
+          // assistantMessageList.style.opacity = "1";
+
+          setTimeout(() => {
+          // 在合成完成后延迟2秒执行的代码
+            clearInterval(intervalId); // 结束循环
+            console.log("说话动作播放结束"); // 在说话声音结束时执行的代码
+          }, speaktime * 1000);
+
+          // 监听音频播放结束事件
+          audio.addEventListener("ended", () => {
+            //可以再次点击发送
+            canSend = true;
+            console.log("音频播放结束");
+          });
+          //说话事件结束后回复Wait动画插入
+          Wait_priority = 2;
+          return result;
+        },
+        (error) => {
+          console.log(error);
+          speechSynthesizer.close();
+        }
+      );
+    }
+
+
+
+    // 定义超时计时器全局变量
+    let timerId = null; 
+    //定义思考气泡
+    let Thinking = document.getElementById("Thinking");
+    //消息发送触发
+    const send = document.getElementById("send");
+    const Input = document.getElementById("Message");
+    let canSend = true; // 设置一个标志位，默认为true，表示可以发送
+    send.addEventListener("click", function () {
+      // console.log(canSend);
+      if (!canSend) {
+        alert("别急嘛~等我说完嘛"); // 在禁止发送时弹出消息
+        return; // 如果标志位为false，结束函数执行，不允许发送
+      }    
+      //触发点击动画后暂停Wait动画插入
+      Wait_priority = 0;
+      const userInput = Input.value.trim();
+      if (userInput !== "") {
+        canSend = false; 
+        displayuserMessage(userInput);
+        //
+        assistantMessageList.style.display = "none";
+        // 显示用户消息列表样式
+        userMessageList.style.display = "block";
+        // 设置用户消息列表内容为 userInput
+        userMessageTitle.textContent = userInput;
+        
+        // // 设置定时器，在一定时间后淡出消失
+        // setTimeout(() => {
+        // userMessageList.style.opacity = "0"; // 设置透明度为0，开始淡出效果
+        //   // 在动画结束后将样式隐藏
+        //   setTimeout(() => {
+        //     userMessageList.style.display = "none";
+        //   }, 2000000); // 这里的延迟时间可以根据需要进行调整，这里设置为2秒
+        // }, 300000); // 设置延迟时间为10秒
+        // userMessageList.style.opacity = "1";
+
+        Input.value = "";
+
+        const randomNum = Math.floor(Math.random() * 10) % 2;
+        models.at(0).startMotion('Thinking', randomNum, 3);  
+        //展示思考气泡
+        Thinking.style.display = "block";
+        console.log('播放动画Thinking'+ randomNum);
+
+        requestOpenAI(userInput).then((result) => {
+          const { massage, emotion } = result;
+          displayassistantMessage(massage);
+          synthesizeSpeech(massage);
+          playAnimation(emotion);
+        });
+      }
+      else{
+        alert("和我聊点什么吧");
+      }
+    });
+
+
+
+
+    // 添加键盘事件监听器
+    Input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        // 按下回车键
+        event.preventDefault(); // 阻止默认的换行行为
+
+        if (!canSend) {
+          alert("别急嘛~等我说完嘛"); // 在禁止发送时弹出消息
+          return; // 如果标志位为false，结束函数执行，不允许发送
+        }
+
+        // 点击"send"按钮相同的操作
+        // 触发点击动画后暂停Wait动画插入
+        Wait_priority = 0;
+        const userInput = Input.value.trim();
+        if (userInput !== "") {
+          canSend = false;
+          displayuserMessage(userInput);
+          //
+          assistantMessageList.style.display = "none";
+          // 显示用户消息列表样式
+          userMessageList.style.display = "block";
+          // 设置用户消息列表内容为 userInput
+          userMessageTitle.textContent = userInput;
+
+          // // 设置定时器，在一定时间后淡出消失
+          // setTimeout(() => {
+          //   userMessageList.style.opacity = "0"; // 设置透明度为0，开始淡出效果
+          //   // 在动画结束后将样式隐藏
+          //   setTimeout(() => {
+          //     userMessageList.style.display = "none";
+          //   }, 2000000); // 这里的延迟时间可以根据需要进行调整，这里设置为2秒
+          // }, 3000000); // 设置延迟时间为10秒
+          // userMessageList.style.opacity = "1";
+
+          Input.value = "";
+
+          const randomNum = Math.floor(Math.random() * 10) % 2;
+          models.at(0).startMotion("Thinking", randomNum, 3);
+          //展示思考气泡
+          Thinking.style.display = "block";
+          console.log("播放动画Thinking" + randomNum);
+
+          // // 清除之前的计时器
+          // clearTimeout(timerId);
+          // // 设置计时器，在30秒后检查是否收到回复
+          // timerId = setTimeout(() => {
+          //   if (canSend) {
+          //     alert("网络开小差了，请重新刷新对话吧");
+          //     // 刷新网页
+          //     location.reload();
+          //   }
+          // }, 30000);
+
+          requestOpenAI(userInput).then((result) => {
+            const { massage, emotion } = result;
+            displayassistantMessage(massage);
+            synthesizeSpeech(massage);
+            playAnimation(emotion);
+          })            
+          .catch((error) => {
+            // 清除计时器
+            clearTimeout(timerId);
+            alert("网络开小差了，请重新刷新对话吧");
+            // 刷新网页
+            location.reload();
+            console.error(error);
+          });
+        }      
+        else{
+          alert("和我聊点什么吧");
+        }
+      }
+
+    });
+
+
+
+    //文字逐个显现
+    const displayassistantWord = (message) => {
+      const assistantMessageList = document.getElementById("assistantMessageList");
+      const assistantMessageTitle = document.getElementById("assistantMessageTitle");
+      assistantMessageList.style.display = "block";
+
+
+      assistantMessageTitle.textContent = ""; // 清空文本内容
+
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index >= message.length) {
+          clearInterval(interval); // 当索引超过消息长度时，清除定时器
+        } else {
+          assistantMessageTitle.textContent += message[index]; // 逐个添加字符
+          index++;
+        }
+      }, 150); // 每100毫秒添加一个字符
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 每隔15秒调用一次播放动画函数
+    setInterval(playIdleAnimation, 15000);
+    // 播放动画函数
+    function playIdleAnimation() {
+      // 在这里编写播放动画的代码
+      const num = Math.floor(Math.random() * 10) % 3;
+      models.at(0).startMotion('Wait', num, Wait_priority ); 
+      console.log('播放动画Wait'+num);
+    }
+
+
+    //播放情绪动画
+    function playAnimation(emotion) {
+      // 检查动作是否完成
+      console.log("播放情绪："+emotion);
+      // 根据情绪选择要播放的动画
+      switch (emotion) {
+        case "喜欢":
+          // 播放喜欢的情绪动画
+          models.at(0).startMotion('Like', 0, 4);
+          break;
+        case "生气":
+          // 播放生气的情绪动画
+          models.at(0).startMotion('Angry', 0, 4);
+          break;
+        case "开心":
+          // 播放大笑的情绪动画
+          models.at(0).startMotion('Laugh', 0, 4);
+          break;
+        case "悲伤":
+          // 播放悲伤的情绪动画
+          models.at(0).startMotion('Crying', 0, 4);
+          break;
+        case "平静":
+          // 播放平静的情绪动画
+          break;
+        case "惊讶":
+          // 播放惊讶的情绪动画
+          models.at(0).startMotion('Amazing', 0, 4);
+          break;
+        default:
+          // 默认情况下，可以播放通用的情绪动画或不执行任何操作
+          break;
+      }
+    }
+
+
+    // 展开/隐藏消息框
+    const showMessageBoxBtn = document.getElementById("showMessageBoxBtn");
+    const messageBox = document.getElementById("messageBox");
+    window.addEventListener("load", function() {
+    // 隐藏 messageBox
+    messageBox.style.display = "none";
+    });
+    showMessageBoxBtn.addEventListener("click", function() {
+      if (messageBox.style.display === "none") {
+        messageBox.style.display = "block";
+      } else {
+        messageBox.style.display = "none";
+      }
+    });
+
+    const messageContent = document.getElementById("messageContent");
+    const pElements = document.getElementsByTagName("p");
+    for (let i = 0; i < pElements.length; i++) {
+      const p = pElements[i];
+      const content = p.textContent;
+      messageContent.textContent += content + "\n";
+    }
+
+// 对话记录加入历史消息列表
+  function displayassistantMessage(message) {
+  const messageContainer = document.createElement("div");
+  messageContainer.classList.add("flex", "items-end");
+  const textContainer = document.createElement("div");
+  textContainer.classList.add("flex", "flex-col", "space-y-2", "text-xs", "max-w-xs", "mx-2", "order-2", "items-start");
+  const messageSpan = document.createElement("span");
+  messageSpan.classList.add("px-4", "py-2", "rounded-lg", "inline-block", "rounded-bl-none", "bg-gray-300", "text-gray-600");
+  messageSpan.textContent = message;
+  const assistantAvatar = document.createElement("img");
+  assistantAvatar.src = "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144";
+  assistantAvatar.src = "assistant_image.png";
+  assistantAvatar.alt = "My profile";
+  assistantAvatar.classList.add("w-8", "h-8", "rounded-full", "order-1");
+  textContainer.appendChild(messageSpan);
+  messageContainer.appendChild(textContainer);
+  messageContainer.appendChild(assistantAvatar);
+  messageBox.appendChild(messageContainer);
+  // 滚动到最新消息
+  messageBox.scrollTop = messageBox.scrollHeight;
+  }
+  function displayuserMessage(message) {
+  const messageContainer = document.createElement("div");
+  messageContainer.classList.add("flex", "items-end", "justify-end");
+  const textContainer = document.createElement("div");
+  textContainer.classList.add("flex", "flex-col", "space-y-2", "text-xs", "max-w-xs", "mx-2", "order-1", "items-end");
+  const messageSpan = document.createElement("span");
+  messageSpan.classList.add("px-4", "py-2", "rounded-lg", "inline-block", "rounded-br-none", "bg-blue-600", "text-white");
+  messageSpan.textContent = message;
+  const userAvatar = document.createElement("img");
+  // userAvatar.src = "https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144";
+  userAvatar.src = "user_image.png";
+  userAvatar.alt = "My profile";
+  userAvatar.classList.add("w-8", "h-8", "rounded-full", "order-2");
+  textContainer.appendChild(messageSpan);
+  messageContainer.appendChild(textContainer);
+  messageContainer.appendChild(userAvatar);
+  messageBox.appendChild(messageContainer);
+  // 滚动到最新消息
+  messageBox.scrollTop = messageBox.scrollHeight;
+  }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "shengli model.moc3",
+		"Textures": [
+			"shengli model.2048/texture_00.png"
+		],
+		"DisplayInfo": "shengli model.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "like_1s",
+				"File": "expressions/like_1s.exp3.json"
+			},
+			{
+				"Name": "happy_1.11s",
+				"File": "expressions/happy_1.11s.exp3.json"
+			}
+		],
+		"Motions": {
+			"Idle": [
+				{
+					"File": "motions/Daiji_01.motion3.json"
+				}
+			],
+			"Speak": [
+				{
+					"File": "motions/Speak_01.motion3.json"
+				},
+				{
+					"File": "motions/Speak_02.motion3.json"
+				}
+			],
+			"Emotions": [
+				{
+					"File": "motions/happy.motion3.json"
+				}
+			],
+			"Thinking": [
+				{
+					"File": "motions/thinking2_4s.motion3.json"
+				},
+				{
+					"File": "motions/thinking_4s.motion3.json"
+				}
+			],
+			"Laugh": [
+				{
+					"File": "motions/happy_1.11s.motion3.json"
+				}
+			],
+			"Like": [
+				{
+					"File": "motions/like_1s.motion3.json"
+				}
+			]
+		}
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		}
+	],
+	"HitAreas": []
+}
